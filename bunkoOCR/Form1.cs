@@ -560,6 +560,11 @@ namespace bunkoOCR
             listBox1.Items.Clear();
             button_config.Enabled = true;
 		}
+
+		private void button6_Click(object sender, EventArgs e)
+		{
+            listBox2.Items.Clear();
+		}
 	}
 
 	public class Block
