@@ -153,7 +153,8 @@ namespace bunkoOCR
             {
                 ["output_dir"] = "",
                 ["override"] = "0",
-            };
+				["autosave"] = "0",
+			};
 
             string[] lines;
             try

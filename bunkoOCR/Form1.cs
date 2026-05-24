@@ -185,7 +185,13 @@ namespace bunkoOCR
             var dict = ConfigReader.LoadPathSetting();
             var output_dir = dict["output_dir"];
             var override_flag = dict["override"] == "1";
+            var autosave_flag = dict["autosave"] == "1";
             var output_filename = "";
+
+            if (autosave_flag)
+            {
+				output_dir = Directory.GetParent(filename).FullName+@"\OCR";
+			}
 
             if(output_dir != "")
             {
@@ -453,7 +459,21 @@ namespace bunkoOCR
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             foreach(var file in files)
             {
-                process(file);
+                if (File.Exists(file))
+                {
+                    process(file);
+                }
+                else if(Directory.Exists(file))
+				{
+                    Directory.GetFiles(file).ToList().ForEach(f =>
+					{
+						if (File.Exists(f))
+						{
+							process(f);
+						}
+					});
+                }
+                
             }
         }
 
@@ -507,13 +527,42 @@ namespace bunkoOCR
 
         private void button_start_Click(object sender, EventArgs e)
         {
-            foreach(string filename in listBox1.Items) {
+            button_start.Enabled = false;
+			foreach(string filename in listBox1.Items) {
                 SendToEngine(filename);
             }
-        }
-    }
+            button_start.Enabled = true;
+		}
 
-    public class Block
+		private void button3_Click(object sender, EventArgs e)
+		{
+			var items = listBox1.Items.Cast<string>().ToArray();
+			System.IO.File.WriteAllLines(@".\listbox_items.txt", items);
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			string filePath = @".\listbox_items.txt"; // 実際のファイルパス
+			FileInfo fileInfo = new FileInfo(filePath);
+			if (File.Exists(filePath) && fileInfo.Length > 0)
+			{
+				button_config.Enabled=false;
+				// リストボックスの既存項目をクリア
+				listBox1.Items.Clear();
+
+				// 全行を読み込んで一括追加
+				listBox1.Items.AddRange(File.ReadAllLines(filePath));
+			}
+		}
+
+		private void button5_Click(object sender, EventArgs e)
+		{
+            listBox1.Items.Clear();
+            button_config.Enabled = true;
+		}
+	}
+
+	public class Block
     {
         public int blockidx { get; set; }
         public string text { get; set; }

@@ -99,7 +99,8 @@ namespace bunkoOCR
             {
                 radioButton_addnumber.Checked = true;
             }
-        }
+            checkBox_autosave.Checked = dict3["autosave"] == "1";
+		}
 
         private void print_label_rubysample()
         {
@@ -149,6 +150,7 @@ namespace bunkoOCR
 
             dict3["output_dir"] = textBox_outputdir.Text;
             dict3["override"] = radioButton_override.Checked ? "1" : "0";
+            dict3["autosave"] = checkBox_autosave.Checked ? "1" : "0";
 
             ConfigReader.Save(dict);
             ConfigReader.SaveRubyTreat(dict2);
@@ -259,5 +261,5 @@ namespace bunkoOCR
                 textBox_outputdir.Text = folderBrowserDialog1.SelectedPath;
             }
         }
-    }
+	}
 }
